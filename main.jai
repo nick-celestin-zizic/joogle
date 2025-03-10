@@ -19,7 +19,6 @@ jai main.jai - build
 Perform an interpreted query (requires modules.procs to exist, and is also very slow)
 jai main.jai - search <query> <limit>
     _TXT;
-    
     command_line := Compiler.get_build_options().compile_time_command_line;
     Compiler.set_build_options_dc(.{do_output=false});
     if !command_line error("Provided no arguments!\n%", usage);
@@ -38,7 +37,7 @@ jai main.jai - search <query> <limit>
 targets :: struct { os: Operating_System_Tag; cpu: CPU_Tag; }.[
     .{ .WINDOWS, CPU },
     .{ .LINUX, CPU },
-    .{.MACOS, .ARM64 } // going with my system default crashed for me :(
+    .{ .MACOS, .ARM64 } // going with my system default crashed for me :(
 ];
 
 // Trying to #import these modules causes bad things to happen! If you want to ignore more modules you can stick them in here.
@@ -208,8 +207,8 @@ perform_query_on_modules :: (args: []string) {
     }
     
     lev :: (a: string, b: string) -> int {
-        n := a.count;
-        m := b.count;
+        n  := a.count;
+        m  := b.count;
         dp := NewArray((n+1)*(m+1), int); // TODO: just preallocate an array big enough for all
         defer array_free(dp);
         

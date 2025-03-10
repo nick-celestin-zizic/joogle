@@ -1,3 +1,4 @@
 /.build
 *.exe
 *.pdb
+/codex_view/.build
