@@ -7,6 +7,7 @@ get_plugin :: () -> *Metaprogram_Plugin {
     my.message           = message;
     my.finish            = finish;
     my.shutdown          = shutdown;
+    my.handle_one_option = handle_one_option;
 
     return my;
 }
