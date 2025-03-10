@@ -156,10 +156,35 @@ finish :: (p: *Metaprogram_Plugin) {
         body := tc.expression;
         header := body.header;
         assert(header != null);
+        // assert(false, "%", header.*);
+        // generate type name a la joogle
+        
+generate_procedure_type_string :: (header: *Code_Procedure_Header) -> string {
+    using header.type.(*Type_Info_Procedure);
+    
+    name_builder: String_Builder;
+    print(*name_builder, "(");
+    for argument_types {
+        print_type_to_builder(*name_builder, it);
+        if it_index != argument_types.count-1 append(*name_builder, ", ");
+    }
+    print(*name_builder, ") -> (");
+    for return_types {
+        print_type_to_builder(*name_builder, it);
+        if it_index != return_types.count-1 append(*name_builder, ", ");
+    }
+    print(*name_builder, ")");
+    return builder_to_string(*name_builder);
+}
+
 
         name := s16_truncate(header.name);
+        
+        assert(context.allocator.proc != temp.proc);
+        auto_release_temp();
+        type := s16_truncate(generate_procedure_type_string(header,, temp));
 
-        contiguous := size_of(Procedure_Record) + name.count + 1;
+        contiguous := size_of(Procedure_Record) + name.count + type.count + 2;
         pointer := ensure_contiguous_space(builder, contiguous);
 
         record := cast(*Procedure_Record) pointer;
@@ -191,13 +216,17 @@ finish :: (p: *Metaprogram_Plugin) {
 
         record.file_index = cast(s32) file_index;
 
-        cursor := pointer + size_of(type_of(<<record));
+        cursor := pointer + size_of(type_of(record.*));
         cursor = write_string_s16(builder, *record.name, cursor, name);
+        cursor = write_string_s16(builder, *record.type, cursor, type);
         
+        // print("\n\n\n% %\n\n\n", cursor - pointer, contiguous);
         advance_through_ensured_space(builder, cursor - pointer);
         assert(cursor - pointer == contiguous);
         
-//        print("Procedure_Record %:\n%\n", index, << record);
+        // dname := decode(*record.name);
+        // dtype := decode(*record.type);
+        // if dname print("Procedure_Record %: % :: %\n", index, dname, dtype);
         index += 1;
     }
 

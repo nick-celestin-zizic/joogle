@@ -124,6 +124,7 @@ Procedure_Record :: struct {
     metrics:         Metrics     #align 1;
     
     name:            Relative_String(s16)  #align 1;
+    type:            Relative_String(s16)  #align 1;
 }
 
 Metrics :: struct {
