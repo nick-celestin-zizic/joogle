@@ -26,6 +26,7 @@
 #load "draw_live_allocations.jai";
 #load "recording.jai";
 #load "treemap.jai";
+#load "search.jai";
 
 SCALE :: 1;  // I use this during development to quickly make the window real big.
 
@@ -113,7 +114,10 @@ main :: () {
 
     border_display_type_index = cast(s32) border_display_type;  // Initialize this because the default dropdown setting is not 0.
     
-    for get_command_line_arguments(,, temp) try_load_file(it);
+    args := get_command_line_arguments(,, temp);
+    args.count -= 1;
+    args.data  += 1;
+    for args try_load_file(it);
     
     quit := false;
     while !quit {
@@ -228,6 +232,7 @@ try_load_file :: (name: string) -> bool {
         codex_help_is_valid = true;
         proc_view_is_dirty  = true;
         current_view_mode = .GRAPHS;
+        current_view_mode = .SEARCH;
     } else {
         set_load_error_string(fail_string);
     }
@@ -271,7 +276,7 @@ draw_one_client_frame :: () {
 
     draw_sidebar(sidebar);
 
-    if current_view_mode == {
+    if #complete current_view_mode == {
       case .SETTINGS;
         draw_settings(content_rect);
       case .INFO;
@@ -280,6 +285,8 @@ draw_one_client_frame :: () {
         draw_metrics(content_rect);
       case .LIVE_ALLOCATIONS;
         draw_live_allocations(content_rect);
+      case .SEARCH;
+        draw_search(content_rect);
     }
 }
 

@@ -3,9 +3,11 @@ View_Mode :: enum u8 {
     INFO             :: 1;
     GRAPHS           :: 2;
     LIVE_ALLOCATIONS :: 3;
+    SEARCH           :: 4;
 }
 
-current_view_mode := View_Mode.GRAPHS;
+// current_view_mode := View_Mode.GRAPHS;
+current_view_mode := View_Mode.SEARCH;
 
 draw_sidebar :: (sidebar: Rect) {
     k :: .5;
@@ -45,4 +47,8 @@ draw_sidebar :: (sidebar: Rect) {
     r.y += button_w + button_margin;
     pressed_allocs := button(r, "Allocs", *button_theme);
     if pressed_allocs  current_view_mode = .LIVE_ALLOCATIONS;
+    
+    r.y += button_w + button_margin;
+    pressed_search := button(r, "Search", *button_theme);
+    if pressed_search  current_view_mode = .SEARCH;
 }
