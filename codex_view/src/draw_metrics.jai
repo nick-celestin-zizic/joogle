@@ -549,9 +549,19 @@ metric_blend :: (proc: *Procedure_Record) -> float {
 
 
 
+editor_process: Process.Process;
 open_editor_to_file_and_line :: (filename: string, line: s64) {
-    command := tprint(editor_command, line, tprint("\"%\"", filename));
+    // command := tprint(editor_command, line, tprint("\"%\"", filename));
+    command := tprint(editor_command, line, filename);
     strings := Process.break_command_into_strings(command);
     log("Running: %\n", strings);
-    Process.run_command(..strings);
+    
+    ok, result := Process.get_process_result(*editor_process, 0);
+    if ok && result.type == .STILL_RUNNING {
+        Process.kill_process(*editor_process);
+        Process.deinit(*editor_process);
+        editor_process = .{};
+    }
+    Process.create_process(*editor_process, ..strings);
+    // Process.run_command(..strings);
 }    

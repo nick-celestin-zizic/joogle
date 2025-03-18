@@ -75,19 +75,19 @@ make_help :: (memory: [] u8) -> (success: bool, help: Codex_Help, error_string: 
     for 0..header.num_modules-1 {
         record := cast(*Module_Record) cursor;
         modules[it] = record;
-        cursor += size_of(type_of(<<record)) + record.fully_pathed_filename.count + record.module_name.count + 2;
+        cursor += size_of(type_of(record.*)) + record.fully_pathed_filename.count + record.module_name.count + 2;
     }
 
     for 0..header.num_files-1 {
         record := cast(*File_Record) cursor;
         files[it] = record;
-        cursor += size_of(type_of(<<record)) + record.fully_pathed_filename.count + 1;
+        cursor += size_of(type_of(record.*)) + record.fully_pathed_filename.count + 1;
     }
 
     for 0..header.num_procedures-1 {
         record := cast(*Procedure_Record) cursor;
         procedures[it] = record;
-        cursor += size_of(type_of(<<record)) + record.name.count + 1;
+        cursor += size_of(type_of(record.*)) + record.name.count + 1 + record.type.count + 1;
     }
     
     return true, help, "";

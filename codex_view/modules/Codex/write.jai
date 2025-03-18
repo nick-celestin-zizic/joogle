@@ -184,7 +184,7 @@ generate_procedure_type_string :: (header: *Code_Procedure_Header) -> string {
         auto_release_temp();
         type := s16_truncate(generate_procedure_type_string(header,, temp));
 
-        contiguous := size_of(Procedure_Record) + name.count + type.count + 2;
+        contiguous := size_of(Procedure_Record) + name.count + 1 + type.count + 1;
         pointer := ensure_contiguous_space(builder, contiguous);
 
         record := cast(*Procedure_Record) pointer;
